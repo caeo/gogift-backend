@@ -21,8 +21,8 @@ app.get('/', (request, response) => {
   response.json({ aplicacao: 'CRUD PESSOAS' })
 })
 
-app.get('/pessoas', repository.getPessoas)
-app.get('/pessoas/:id', repository.getPessoaById)
-app.post('/pessoas', repository.createPessoa)
-app.put('/pessoas/:id', repository.updatePessoa)
-app.delete('/pessoas/:id', repository.deletePessoa)
+app.get('/pessoas', repository.getParceiros)
+app.get('/pessoas/:id', repository.getParceirosById)
+app.post('/pessoas', repository.createParceiros)
+app.put('/pessoas/:id', repository.updateParceiros)
+app.delete('/pessoas/:id', repository.deleteParceiros)

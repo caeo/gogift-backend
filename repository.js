@@ -2,37 +2,54 @@ const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'sistema_pessoas',
+  database: 'gogiftdb',
   password: '77077csc',
   port: 5432
 })
 
-const getPessoas = (request, response) => {
-  pool.query('SELECT * FROM pessoas ORDER BY id DESC', (error, results) => {
-    if (error) {
-      throw error
+const getParceiros = (request, response) => {
+  pool.query(
+    'SELECT * FROM parceiros ORDER BY id_parceiros DESC',
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
     }
-    response.status(200).json(results.rows)
-  })
+  )
 }
 
-const getPessoaById = (request, response) => {
+const getParceirosById = (request, response) => {
   const id = parseInt(request.params.id)
 
-  pool.query('SELECT * FROM pessoas WHERE id = $1', [id], (error, results) => {
-    if (error) {
-      throw error
+  pool.query(
+    'SELECT * FROM parceiros WHERE id_parceiros = $1',
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
     }
-    response.status(200).json(results.rows)
-  })
+  )
 }
 
-const createPessoa = (request, response) => {
-  const { nome, email, telefone } = request.body
-
+const createParceiros = (request, response) => {
+  const { razao_social, endereco, estado, cnpj, email, senha } = request.body
+  const dt_criacao = new Date()
+  const dt_encerramento = null
   pool.query(
-    'INSERT INTO pessoas (nome, email, telefone) VALUES ($1, $2, $3)',
-    [nome, email, telefone],
+    'INSERT INTO parceiros ( razao_social, endereco, estado, cnpj, email, senha, dt_criacao, dt_encerramento) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+    [
+      razao_social,
+      endereco,
+      estado,
+      cnpj,
+      email,
+      senha,
+      dt_criacao,
+      dt_encerramento
+    ],
     (error, result) => {
       if (error) {
         throw error
@@ -42,13 +59,13 @@ const createPessoa = (request, response) => {
   )
 }
 
-const updatePessoa = (request, response) => {
+const updateParceiros = (request, response) => {
   const id = parseInt(request.params.id)
-  const { nome, email, telefone } = request.body
+  const { razao_social, endereco, estado, cnpj, email, senha } = request.body
 
   pool.query(
-    'UPDATE pessoas SET nome = $1, email = $2, telefone = $3 WHERE id = $4',
-    [nome, email, telefone, id],
+    'UPDATE parceiros SET razao_social = $1, endereco = $2, estado = $3, cnpj = $4, email = $5,  senha = $6, WHERE id_parceiros = $7',
+    [razao_social, endereco, estado, cnpj, email, senha, id_parceiros],
     (error, result) => {
       if (error) {
         throw error
@@ -58,23 +75,27 @@ const updatePessoa = (request, response) => {
   )
 }
 
-const deletePessoa = (request, response) => {
+const deleteParceiros = (request, response) => {
   const id = parseInt(request.params.id)
 
-  pool.query('DELETE FROM pessoas WHERE id = $1', [id], (error, result) => {
-    if (error) {
-      throw error
+  pool.query(
+    'DELETE FROM parceiros WHERE id_parceiros = $1',
+    [id],
+    (error, result) => {
+      if (error) {
+        throw error
+      }
+      response
+        .status(200)
+        .send(`Pessoa removida com sucesso com o identificador: ${id}`)
     }
-    response
-      .status(200)
-      .send(`Pessoa removida com sucesso com o identificador: ${id}`)
-  })
+  )
 }
 
 module.exports = {
-  getPessoas,
-  getPessoaById,
-  createPessoa,
-  updatePessoa,
-  deletePessoa
+  getParceiros,
+  getParceirosById,
+  createParceiros,
+  updateParceiros,
+  deleteParceiros
 }
